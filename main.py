@@ -13,7 +13,7 @@ class HhCvUp():
             self.auth_and_up_cv(playwright)
 
     def auth_and_up_cv(self, playwright: Playwright) -> None:
-        browser = playwright.chromium.launch(headless=False)
+        browser = playwright.chromium.launch()
         context = browser.new_context(viewport={"width": 1920, "height": 1080})
         page = context.new_page()
         page.goto(URL)
