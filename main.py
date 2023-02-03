@@ -4,7 +4,7 @@ from playwright.sync_api import Playwright, sync_playwright
 from config import URL, EMAIL, PASSWORD
 
 
-class HhCvUp():
+class HhCvUp:
     def __init__(self):
         ...
 
@@ -24,7 +24,6 @@ class HhCvUp():
         page.get_by_placeholder("Электронная почта или телефон").press("Tab")
         page.get_by_placeholder("Пароль").fill(PASSWORD)
         page.get_by_placeholder("Пароль").press("Enter")
-        page.is_visible('div.resume-sidebar-background')
         page.get_by_role("button", name="Обновить дату").click()
         pickle.dump(context.cookies(), open('cookies.pkl', 'wb'))
         context.close()
