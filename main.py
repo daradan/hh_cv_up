@@ -1,4 +1,6 @@
 import pickle
+import logging
+from logging.handlers import RotatingFileHandler
 from playwright.sync_api import Playwright, sync_playwright, BrowserContext, Browser, Page, TimeoutError
 from os import path
 
@@ -10,9 +12,11 @@ class HhCvUp:
         ...
 
     def start(self):
+        logging.info('*** START ***')
         with sync_playwright() as playwright:
             context, browser = self.make_context(playwright)
             if not path.exists(COOKIES_FILE_NAME):
+                logging.info(f'{COOKIES_FILE_NAME} isn\'t found')
                 page = context.new_page()
                 self.auth(context, page)
             else:
@@ -22,6 +26,7 @@ class HhCvUp:
             context.close()
             context_with_cookies.close()
             browser.close()
+        logging.info('*** END ***')
 
     def make_context(self, playwright: Playwright) -> tuple[BrowserContext, Browser]:
         browser = playwright.chromium.launch()
@@ -51,9 +56,16 @@ class HhCvUp:
         page.goto(URL)
         try:
             page.get_by_role("button", name="Обновить дату").click()
+            logging.info('CV updated')
         except TimeoutError:
+            logging.error('CV doesn\'t updated')
             return
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        handlers=[RotatingFileHandler('hh_cv_up.log', mode='a+', maxBytes=10485760, backupCount=2, encoding='utf-8')],
+        format="%(asctime)s %(levelname)s:%(message)s",
+        level=logging.INFO,
+    )
     HhCvUp().start()
